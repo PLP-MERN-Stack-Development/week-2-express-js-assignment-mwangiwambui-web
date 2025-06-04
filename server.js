@@ -1,16 +1,19 @@
 // server.js - Starter Express server for Week 2 assignment
-
+require('dotenv').config();
 // Import required modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
+const productRoutes = require('./routes'); 
+const { logger, errorHandler } = require('./middleware'); 
 
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware setup
+// Middleware setup 
 app.use(bodyParser.json());
+app.use(logger); 
 
 // Sample in-memory products database
 let products = [
@@ -40,9 +43,14 @@ let products = [
   }
 ];
 
+app.use('/api', productRoutes);
+
+// Register after all routes
+app.use(errorHandler);
+
 // Root route
 app.get('/', (req, res) => {
-  res.send('Welcome to the Product API! Go to /api/products to see all products.');
+  res.send('Hello World');
 });
 
 // TODO: Implement the following routes:
@@ -68,4 +76,4 @@ app.listen(PORT, () => {
 });
 
 // Export the app for testing purposes
-module.exports = app; 
+module.exports = app;
